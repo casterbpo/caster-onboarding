@@ -387,7 +387,7 @@
     <!-- ══ CONTABILIDADE ══ -->
     <div class="field-group">
       <div class="field-group-title">Contabilidade</div>
-      <div class="field col-span-2">
+      <div class="field" style="margin-bottom:16px">
         <label>A empresa possui contabilidade? <span class="req">*</span></label>
         <div class="toggle-group" id="tem_contabilidade_group">
           <label class="toggle-opt" onclick="selectToggle(this,'tem_contabilidade_group'); showConditional('contabilidade_wrap', true)">
@@ -400,7 +400,7 @@
       </div>
       <div id="contabilidade_wrap" class="conditional">
         <div class="grid-2">
-          <div class="field">
+          <div class="field col-span-2">
             <label>Nome da Empresa de Contabilidade</label>
             <input type="text" id="cont_empresa" placeholder="Ex: Contabilidade Souza &amp; Associados">
           </div>
