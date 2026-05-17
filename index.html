@@ -352,7 +352,11 @@
           <label>CNPJ <span class="req">*</span></label>
           <input type="text" id="cnpj" placeholder="00.000.000/0000-00" required maxlength="18">
           <span class="field-error">Campo obrigatório</span>
-        </div>
+<div class="field">
+  <label>Telefone / WhatsApp da Empresa <span class="req">*</span></label>
+  <input type="tel" id="tel_empresa" placeholder="(00) 00000-0000" required>
+  <span class="field-hint">Não esquecer de inserir o DDD</span>
+<span class="field-error">Campo obrigatório</span>
         <div class="field">
           <label>Ramo de Atividade <span class="req">*</span></label>
           <select id="ramo" required>
@@ -411,6 +415,7 @@
           <div class="field">
             <label>Telefone / WhatsApp do Contador</label>
             <input type="tel" id="cont_tel" placeholder="(00) 00000-0000">
+<span class="field-hint">Não esquecer de inserir o DDD</span>
           </div>
           <div class="field">
             <label>Quando a empresa envia as informações para a contabilidade?</label>
@@ -952,8 +957,9 @@
         </div>
         <div class="field">
           <label>WhatsApp ${reqMark}</label>
-          <input type="tel" class="resp-tel" placeholder="(00) 00000-0000" ${required}>
-          <span class="field-error">Campo obrigatório</span>
+<input type="tel" class="resp-tel" placeholder="(00) 00000-0000" ${required}>
+<span class="field-error">Campo obrigatório</span>
+<span class="field-hint">Não esquecer de inserir o DDD</span>
         </div>
       </div>
     `;
@@ -1154,12 +1160,12 @@
     this.value = v;
   });
 
-  document.getElementById('cont_tel').addEventListener('input', function() {
-    let v = this.value.replace(/\D/g, '').substring(0, 11);
-    v = v.replace(/^(\d{2})(\d)/, '($1) $2');
-    v = v.replace(/(\d{5})(\d)/, '$1-$2');
-    this.value = v;
-  });
+  document.getElementById('tel_empresa').addEventListener('input', function() {
+  let v = this.value.replace(/\D/g, '').substring(0, 11);
+  v = v.replace(/^(\d{2})(\d)/, '($1) $2');
+  v = v.replace(/(\d{5})(\d)/, '$1-$2');
+  this.value = v;
+});
 
   document.querySelectorAll('input, select, textarea').forEach(el => {
     el.addEventListener('input', () => {
