@@ -971,15 +971,21 @@
 
   /* ── Toggles ── */
   function selectToggle(el, groupOrId) {
-    let opts;
-    if (typeof groupOrId === 'string') {
-      opts = document.querySelectorAll('#' + groupOrId + ' .toggle-opt');
-    } else {
-      opts = groupOrId.querySelectorAll('.toggle-opt');
-    }
-    opts.forEach(o => o.classList.remove('selected'));
-    el.classList.add('selected');
+  let opts;
+  if (typeof groupOrId === 'string') {
+    opts = document.querySelectorAll('#' + groupOrId + ' .toggle-opt');
+  } else {
+    opts = groupOrId.querySelectorAll('.toggle-opt');
   }
+  opts.forEach(o => {
+    o.classList.remove('selected');
+    const inp = o.querySelector('input[type=radio]');
+    if (inp) inp.checked = false;
+  });
+  el.classList.add('selected');
+  const inp = el.querySelector('input[type=radio]');
+  if (inp) inp.checked = true;
+}
 
   function toggleCheck(el, event) {
     event.preventDefault();
@@ -1041,14 +1047,8 @@
         .map(el => el.textContent.trim()).join(', ');
 
     const radio = (name) => {
-  // Tenta pelo :checked nativo primeiro
   const sel = document.querySelector('input[name="' + name + '"]:checked');
-  if (sel) return sel.value;
-  // Se não encontrar, busca pelo botão com classe "selected"
-  const visual = document.querySelector(
-    '.toggle-opt.selected input[name="' + name + '"]'
-  );
-  return visual ? visual.value : '';
+  return sel ? sel.value : '';
 };
 
     const val = (id) => {
@@ -1210,6 +1210,10 @@
       alert('Ocorreu um erro ao enviar. Verifique sua conexão e tente novamente.\n\nDetalhe: ' + err.message);
     }
   }
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.toggle-opt.selected input[type=radio]')
+    .forEach(inp => { inp.checked = true; });
+});
 </script>
 </body>
 </html>
