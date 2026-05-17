@@ -195,13 +195,32 @@
   .conditional { display: none; }
   .conditional.visible { display: block; }
 
-  .bank-entry { background: var(--creme); border: 1px solid rgba(0,0,0,0.08); border-radius: 10px; padding: 16px; margin-bottom: 12px; position: relative; }
+  /* ── ENTRADAS DINÂMICAS ── */
+  .dynamic-entry {
+    background: var(--creme); border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 10px; padding: 16px; margin-bottom: 12px;
+  }
+  .dynamic-entry-header {
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;
+  }
+  .dynamic-entry-label {
+    font-size: 0.78rem; font-weight: 600; color: var(--verde);
+    text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .entry-remove {
+    background: none; border: none; color: #aaa; cursor: pointer;
+    font-size: 1.1rem; line-height: 1; padding: 2px 6px; border-radius: 4px;
+    transition: color .2s, background .2s;
+  }
+  .entry-remove:hover { color: var(--erro); background: rgba(192,57,43,0.08); }
+
+  .bank-entry { background: var(--creme); border: 1px solid rgba(0,0,0,0.08); border-radius: 10px; padding: 16px; margin-bottom: 12px; }
   .bank-entry-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
   .bank-entry-label { font-size: 0.78rem; font-weight: 600; color: var(--verde); text-transform: uppercase; letter-spacing: 0.05em; }
   .bank-remove { background: none; border: none; color: #aaa; cursor: pointer; font-size: 1.1rem; line-height: 1; padding: 2px 6px; border-radius: 4px; transition: color .2s, background .2s; }
   .bank-remove:hover { color: var(--erro); background: rgba(192,57,43,0.08); }
 
-  .btn-add-bank {
+  .btn-add-entry, .btn-add-bank {
     display: inline-flex; align-items: center; gap: 8px;
     padding: 10px 18px; background: transparent;
     border: 1.5px dashed rgba(201,168,76,0.4); border-radius: 8px;
@@ -209,7 +228,9 @@
     font-size: 0.84rem; font-weight: 500; cursor: pointer;
     margin-top: 8px; transition: all .2s; width: 100%; justify-content: center;
   }
-  .btn-add-bank:hover { border-color: var(--dourado); background: rgba(201,168,76,0.06); color: var(--verde-escuro); }
+  .btn-add-entry:hover, .btn-add-bank:hover {
+    border-color: var(--dourado); background: rgba(201,168,76,0.06); color: var(--verde-escuro);
+  }
 
   .upload-zone { border: 2px dashed rgba(201,168,76,0.35); border-radius: 10px; padding: 28px 20px; text-align: center; cursor: pointer; background: rgba(201,168,76,0.04); transition: all .2s; }
   .upload-zone:hover { border-color: var(--dourado); background: rgba(201,168,76,0.08); }
@@ -310,10 +331,11 @@
       <div class="section-icon">🏢</div>
       <div class="section-meta">
         <div class="section-title">Dados da Empresa</div>
-        <div class="section-desc">Informações básicas e contato do responsável financeiro</div>
+        <div class="section-desc">Informações básicas, responsáveis financeiros e contabilidade</div>
       </div>
     </div>
 
+    <!-- Identificação -->
     <div class="field-group">
       <div class="field-group-title">Identificação</div>
       <div class="grid-2">
@@ -352,31 +374,54 @@
       </div>
     </div>
 
+    <!-- ══ RESPONSÁVEIS FINANCEIROS (dinâmico) ══ -->
     <div class="field-group">
-      <div class="field-group-title">Responsável pelo Financeiro</div>
-      <div class="grid-2">
-        <div class="field">
-          <label>Nome Completo <span class="req">*</span></label>
-          <input type="text" id="resp_nome" placeholder="Quem vai nos enviar as informações" required>
-          <span class="field-error">Campo obrigatório</span>
+      <div class="field-group-title">Responsável(is) pelo Financeiro</div>
+      <div class="info-box">
+        Informe todos os responsáveis que nos enviarão informações ou que precisam ser copiados nas comunicações financeiras.
+      </div>
+      <div id="responsaveis-container"></div>
+      <button type="button" class="btn-add-entry" onclick="addResponsavel()">+ Adicionar outro responsável</button>
+    </div>
+
+    <!-- ══ CONTABILIDADE ══ -->
+    <div class="field-group">
+      <div class="field-group-title">Contabilidade</div>
+      <div class="field" style="margin-bottom:16px">
+        <label>A empresa possui contabilidade? <span class="req">*</span></label>
+        <div class="toggle-group" id="tem_contabilidade_group">
+          <label class="toggle-opt" onclick="selectToggle(this,'tem_contabilidade_group'); showConditional('contabilidade_wrap', true)">
+            <input type="radio" name="tem_contabilidade" value="sim"> <span class="dot"></span> Sim
+          </label>
+          <label class="toggle-opt selected" onclick="selectToggle(this,'tem_contabilidade_group'); showConditional('contabilidade_wrap', false)">
+            <input type="radio" name="tem_contabilidade" value="nao"> <span class="dot"></span> Não
+          </label>
         </div>
-        <div class="field">
-          <label>Cargo</label>
-          <input type="text" id="resp_cargo" placeholder="Ex: Diretora Financeira">
-        </div>
-        <div class="field">
-          <label>E-mail <span class="req">*</span></label>
-          <input type="email" id="resp_email" placeholder="email@empresa.com.br" required>
-          <span class="field-error">E-mail inválido</span>
-        </div>
-        <div class="field">
-          <label>WhatsApp <span class="req">*</span></label>
-          <input type="tel" id="resp_tel" placeholder="(00) 00000-0000" required>
-          <span class="field-error">Campo obrigatório</span>
+      </div>
+      <div id="contabilidade_wrap" class="conditional">
+        <div class="grid-2">
+          <div class="field">
+            <label>Nome da Empresa de Contabilidade</label>
+            <input type="text" id="cont_empresa" placeholder="Ex: Contabilidade Souza &amp; Associados">
+          </div>
+          <div class="field">
+            <label>Nome do Contador Responsável</label>
+            <input type="text" id="cont_nome" placeholder="Ex: João da Silva">
+          </div>
+          <div class="field">
+            <label>Telefone / WhatsApp do Contador</label>
+            <input type="tel" id="cont_tel" placeholder="(00) 00000-0000">
+          </div>
+          <div class="field">
+            <label>Quando a empresa envia as informações para a contabilidade?</label>
+            <input type="text" id="cont_dia_envio" placeholder="Ex: Todo dia 10 de cada mês">
+            <span class="field-hint">Informe o dia ou período em que costumam receber balancetes, relatórios ou documentos</span>
+          </div>
         </div>
       </div>
     </div>
 
+    <!-- Contas Bancárias -->
     <div class="field-group">
       <div class="field-group-title">Contas Bancárias</div>
       <div class="info-box">
@@ -415,6 +460,7 @@
       <button type="button" class="btn-add-bank" onclick="addBank()">+ Adicionar outra conta bancária</button>
     </div>
 
+    <!-- Sistema de Gestão -->
     <div class="field-group">
       <div class="field-group-title">Sistema de Gestão Atual</div>
       <div class="info-box">
@@ -853,16 +899,95 @@
 </main>
 
 <footer>
-  © 2025 <span>Caster BPO Financeiro</span> — Todas as informações são tratadas com total sigilo e confidencialidade, em conformidade com a LGPD.
+  © 2026 <span>Caster BPO Financeiro</span> — Todas as informações são tratadas com total sigilo e confidencialidade, em conformidade com a LGPD.
 </footer>
 
 <script>
   let currentStep = 1;
-  let bankCount = 1;
+  let bankCount   = 1;
+  let respCount   = 0;
 
   const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxWTA-XdJ-T7CsaVZHLBgeT9Aer8NEuyowFJnOBV1BJ4DelBE9lR-u2EnAaDv_--MBs/exec";
 
-  /* ── Campo "Outro banco" ── */
+  // ══════════════════════════════════════════
+  //  RESPONSÁVEIS FINANCEIROS — dinâmico
+  // ══════════════════════════════════════════
+  function addResponsavel() {
+    respCount++;
+    const container = document.getElementById('responsaveis-container');
+    const entry = document.createElement('div');
+    entry.className = 'dynamic-entry';
+    entry.id = 'resp-' + respCount;
+
+    const isFirst  = respCount === 1;
+    const reqMark  = isFirst ? '<span class="req">*</span>' : '';
+    const required = isFirst ? 'required' : '';
+    const removeBtn = isFirst ? '' :
+      `<button type="button" class="entry-remove" onclick="removeResponsavel('resp-${respCount}')" title="Remover">✕</button>`;
+
+    entry.innerHTML = `
+      <div class="dynamic-entry-header">
+        <span class="dynamic-entry-label">Responsável ${respCount}</span>
+        ${removeBtn}
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label>Nome Completo ${reqMark}</label>
+          <input type="text" class="resp-nome" placeholder="Quem vai nos enviar as informações" ${required}>
+          <span class="field-error">Campo obrigatório</span>
+        </div>
+        <div class="field">
+          <label>Cargo</label>
+          <input type="text" class="resp-cargo" placeholder="Ex: Diretora Financeira">
+        </div>
+        <div class="field">
+          <label>E-mail ${reqMark}</label>
+          <input type="email" class="resp-email" placeholder="email@empresa.com.br" ${required}>
+          <span class="field-error">Campo obrigatório</span>
+        </div>
+        <div class="field">
+          <label>WhatsApp ${reqMark}</label>
+          <input type="tel" class="resp-tel" placeholder="(00) 00000-0000" ${required}>
+          <span class="field-error">Campo obrigatório</span>
+        </div>
+      </div>
+    `;
+
+    container.appendChild(entry);
+
+    // Máscara de telefone
+    entry.querySelector('.resp-tel').addEventListener('input', function() {
+      let v = this.value.replace(/\D/g, '').substring(0, 11);
+      v = v.replace(/^(\d{2})(\d)/, '($1) $2');
+      v = v.replace(/(\d{5})(\d)/, '$1-$2');
+      this.value = v;
+    });
+
+    // Limpa erros ao digitar
+    entry.querySelectorAll('input').forEach(el => {
+      el.addEventListener('input', () => {
+        el.classList.remove('invalid');
+        const p = el.closest('.field');
+        if (p) p.classList.remove('has-error');
+      });
+    });
+  }
+
+  function removeResponsavel(id) {
+    document.getElementById(id)?.remove();
+    renumberResponsaveis();
+  }
+
+  function renumberResponsaveis() {
+    document.querySelectorAll('#responsaveis-container .dynamic-entry').forEach((el, i) => {
+      const lbl = el.querySelector('.dynamic-entry-label');
+      if (lbl) lbl.textContent = 'Responsável ' + (i + 1);
+    });
+  }
+
+  // ══════════════════════════════════════════
+  //  BANCOS — dinâmico
+  // ══════════════════════════════════════════
   function toggleOutroBanco(select) {
     const input = select.parentElement.querySelector('.outro-banco-input');
     if (select.value === 'Outro') {
@@ -876,7 +1001,6 @@
     }
   }
 
-  /* ── Bancos dinâmicos ── */
   function addBank() {
     bankCount++;
     const container = document.getElementById('banks-container');
@@ -886,7 +1010,7 @@
     entry.innerHTML = `
       <div class="bank-entry-header">
         <span class="bank-entry-label">Conta ${bankCount}</span>
-        <button type="button" class="bank-remove" onclick="removeBank('bank-${bankCount}')" title="Remover conta">✕</button>
+        <button type="button" class="bank-remove" onclick="removeBank('bank-${bankCount}')" title="Remover">✕</button>
       </div>
       <div class="grid-3">
         <div class="field">
@@ -901,14 +1025,8 @@
           </select>
           <input type="text" class="outro-banco-input" placeholder="Digite o nome do banco">
         </div>
-        <div class="field">
-          <label>Agência</label>
-          <input type="text" class="banco-ag" placeholder="0000">
-        </div>
-        <div class="field">
-          <label>Conta</label>
-          <input type="text" class="banco-cc" placeholder="00000-0">
-        </div>
+        <div class="field"><label>Agência</label><input type="text" class="banco-ag" placeholder="0000"></div>
+        <div class="field"><label>Conta</label><input type="text" class="banco-cc" placeholder="00000-0"></div>
       </div>
     `;
     container.appendChild(entry);
@@ -916,19 +1034,20 @@
   }
 
   function removeBank(id) {
-    const el = document.getElementById(id);
-    if (el) el.remove();
+    document.getElementById(id)?.remove();
     renumberBanks();
   }
 
   function renumberBanks() {
-    document.querySelectorAll('#banks-container .bank-entry').forEach((entry, i) => {
-      const label = entry.querySelector('.bank-entry-label');
-      if (label) label.textContent = 'Conta ' + (i + 1);
+    document.querySelectorAll('#banks-container .bank-entry').forEach((el, i) => {
+      const lbl = el.querySelector('.bank-entry-label');
+      if (lbl) lbl.textContent = 'Conta ' + (i + 1);
     });
   }
 
-  /* ── Navegação ── */
+  // ══════════════════════════════════════════
+  //  NAVEGAÇÃO
+  // ══════════════════════════════════════════
   function goTo(step) {
     if (step > currentStep && !validateSection(currentStep)) return;
     document.getElementById('section-' + currentStep).classList.remove('active');
@@ -969,23 +1088,25 @@
     return valid;
   }
 
-  /* ── Toggles ── */
+  // ══════════════════════════════════════════
+  //  TOGGLES E CHECKS
+  // ══════════════════════════════════════════
   function selectToggle(el, groupOrId) {
-  let opts;
-  if (typeof groupOrId === 'string') {
-    opts = document.querySelectorAll('#' + groupOrId + ' .toggle-opt');
-  } else {
-    opts = groupOrId.querySelectorAll('.toggle-opt');
+    let opts;
+    if (typeof groupOrId === 'string') {
+      opts = document.querySelectorAll('#' + groupOrId + ' .toggle-opt');
+    } else {
+      opts = groupOrId.querySelectorAll('.toggle-opt');
+    }
+    opts.forEach(o => {
+      o.classList.remove('selected');
+      const inp = o.querySelector('input[type=radio]');
+      if (inp) inp.checked = false;
+    });
+    el.classList.add('selected');
+    const inp = el.querySelector('input[type=radio]');
+    if (inp) inp.checked = true;
   }
-  opts.forEach(o => {
-    o.classList.remove('selected');
-    const inp = o.querySelector('input[type=radio]');
-    if (inp) inp.checked = false;
-  });
-  el.classList.add('selected');
-  const inp = el.querySelector('input[type=radio]');
-  if (inp) inp.checked = true;
-}
 
   function toggleCheck(el, event) {
     event.preventDefault();
@@ -995,11 +1116,12 @@
   function showConditional(id, show) {
     const el = document.getElementById(id);
     if (!el) return;
-    if (show) el.classList.add('visible');
-    else el.classList.remove('visible');
+    show ? el.classList.add('visible') : el.classList.remove('visible');
   }
 
-  /* ── Upload ── */
+  // ══════════════════════════════════════════
+  //  UPLOAD
+  // ══════════════════════════════════════════
   function handleFiles(input, listId) {
     const list = document.getElementById(listId);
     Array.from(input.files).forEach(file => {
@@ -1015,7 +1137,9 @@
     });
   }
 
-  /* ── Máscaras ── */
+  // ══════════════════════════════════════════
+  //  MÁSCARAS
+  // ══════════════════════════════════════════
   document.getElementById('cnpj').addEventListener('input', function() {
     let v = this.value.replace(/\D/g, '').substring(0, 14);
     v = v.replace(/^(\d{2})(\d)/, '$1.$2');
@@ -1025,7 +1149,7 @@
     this.value = v;
   });
 
-  document.getElementById('resp_tel').addEventListener('input', function() {
+  document.getElementById('cont_tel').addEventListener('input', function() {
     let v = this.value.replace(/\D/g, '').substring(0, 11);
     v = v.replace(/^(\d{2})(\d)/, '($1) $2');
     v = v.replace(/(\d{5})(\d)/, '$1-$2');
@@ -1040,86 +1164,100 @@
     });
   });
 
-  /* ── Coleta dados ── */
+  // ══════════════════════════════════════════
+  //  COLETA DE DADOS
+  // ══════════════════════════════════════════
   function coletarDados() {
-    const checks = (containerId) =>
-      [...document.querySelectorAll('#' + containerId + ' .check-opt.checked')]
+    const checks = (id) =>
+      [...document.querySelectorAll('#' + id + ' .check-opt.checked')]
         .map(el => el.textContent.trim()).join(', ');
 
     const radio = (name) => {
-  const sel = document.querySelector('input[name="' + name + '"]:checked');
-  return sel ? sel.value : '';
-};
+      const sel = document.querySelector('input[name="' + name + '"]:checked');
+      return sel ? sel.value : '';
+    };
 
     const val = (id) => {
       const el = document.getElementById(id);
       return el ? el.value.trim() : '';
     };
 
-    // Coleta bancos — usa o campo de texto quando "Outro" é selecionado
-    const bancos = [...document.querySelectorAll('#banks-container .bank-entry')].map((entry, i) => {
-      const select = entry.querySelector('.banco-select');
-      const outro  = entry.querySelector('.outro-banco-input');
-      const banco  = select?.value === 'Outro'
-        ? (outro?.value.trim() || 'Outro')
-        : (select?.value || '');
-      const ag = entry.querySelector('.banco-ag')?.value.trim() || '';
-      const cc = entry.querySelector('.banco-cc')?.value.trim() || '';
-      if (!banco) return null;
-      return 'Conta ' + (i + 1) + ': ' + banco +
-        (ag ? ' | Ag: ' + ag : '') +
-        (cc ? ' | CC: ' + cc : '');
-    }).filter(Boolean).join(' / ');
+    // Responsáveis — linha por responsável
+    const responsaveis = [...document.querySelectorAll('#responsaveis-container .dynamic-entry')]
+      .map((entry, i) => {
+        const nome  = entry.querySelector('.resp-nome')?.value.trim()  || '';
+        const cargo = entry.querySelector('.resp-cargo')?.value.trim() || '';
+        const email = entry.querySelector('.resp-email')?.value.trim() || '';
+        const tel   = entry.querySelector('.resp-tel')?.value.trim()   || '';
+        if (!nome) return null;
+        return `Resp. ${i+1}: ${nome}${cargo ? ' (' + cargo + ')' : ''} | E-mail: ${email} | WhatsApp: ${tel}`;
+      }).filter(Boolean).join('\n');
+
+    // Bancos
+    const bancos = [...document.querySelectorAll('#banks-container .bank-entry')]
+      .map((entry, i) => {
+        const select = entry.querySelector('.banco-select');
+        const outro  = entry.querySelector('.outro-banco-input');
+        const banco  = select?.value === 'Outro' ? (outro?.value.trim() || 'Outro') : (select?.value || '');
+        const ag = entry.querySelector('.banco-ag')?.value.trim() || '';
+        const cc = entry.querySelector('.banco-cc')?.value.trim() || '';
+        if (!banco) return null;
+        return 'Conta ' + (i+1) + ': ' + banco + (ag ? ' | Ag: ' + ag : '') + (cc ? ' | CC: ' + cc : '');
+      }).filter(Boolean).join(' / ');
 
     return {
-      razao_social:       val('razao_social'),
-      nome_fantasia:      val('nome_fantasia'),
-      cnpj:               val('cnpj'),
-      ramo:               val('ramo'),
-      regime:             val('regime'),
-      resp_nome:          val('resp_nome'),
-      resp_cargo:         val('resp_cargo'),
-      resp_email:         val('resp_email'),
-      resp_tel:           val('resp_tel'),
-      bancos:             bancos,
-      tem_sistema:        radio('tem_sistema'),
-      sistema_nome:       val('sistema_nome'),
-      sistema_link:       val('sistema_link'),
-      sistema_uso:        checks('sistema_uso_group'),
-      tem_fixas:          radio('tem_fixas'),
-      cats_fixas:         checks('cats_fixas'),
-      outras_fixas:       val('outras_fixas'),
-      total_fixas:        val('total_fixas'),
-      tem_variaveis:      radio('tem_variaveis'),
-      desc_variaveis:     val('desc_variaveis'),
-      total_variaveis:    val('total_variaveis'),
-      fornecedores:       val('fornecedores'),
-      tem_cp_aberto:      radio('tem_cp_aberto'),
-      cp_aberto_valor:    val('cp_aberto_valor'),
-      cp_aberto_qtd:      val('cp_aberto_qtd'),
-      cp_acordos:         val('cp_acordos'),
-      envio_docs:         checks('envio_docs_group'),
-      obs_cp:             val('obs_cp'),
-      formas_recebimento: checks('formas_recebimento_group'),
-      faturamento:        val('faturamento'),
-      num_clientes:       val('num_clientes'),
-      tem_contratos:      radio('tem_contratos'),
-      num_contratos:      val('num_contratos'),
-      val_contrato:       val('val_contrato'),
-      venc_contratos:     val('venc_contratos'),
-      tem_reajuste:       radio('tem_reajuste'),
-      tem_cr_aberto:      radio('tem_cr_aberto'),
-      cr_aberto_valor:    val('cr_aberto_valor'),
-      cr_aberto_clientes: val('cr_aberto_clientes'),
-      cr_acordos:         val('cr_acordos'),
-      faz_cobranca:       radio('faz_cobranca'),
-      obs_cr:             val('obs_cr'),
-      obs_final:          val('obs_final'),
-      horario:            radio('horario'),
+      razao_social:        val('razao_social'),
+      nome_fantasia:       val('nome_fantasia'),
+      cnpj:                val('cnpj'),
+      ramo:                val('ramo'),
+      regime:              val('regime'),
+      responsaveis:        responsaveis,
+      tem_contabilidade:   radio('tem_contabilidade'),
+      cont_empresa:        val('cont_empresa'),
+      cont_nome:           val('cont_nome'),
+      cont_tel:            val('cont_tel'),
+      cont_dia_envio:      val('cont_dia_envio'),
+      bancos:              bancos,
+      tem_sistema:         radio('tem_sistema'),
+      sistema_nome:        val('sistema_nome'),
+      sistema_link:        val('sistema_link'),
+      sistema_uso:         checks('sistema_uso_group'),
+      tem_fixas:           radio('tem_fixas'),
+      cats_fixas:          checks('cats_fixas'),
+      outras_fixas:        val('outras_fixas'),
+      total_fixas:         val('total_fixas'),
+      tem_variaveis:       radio('tem_variaveis'),
+      desc_variaveis:      val('desc_variaveis'),
+      total_variaveis:     val('total_variaveis'),
+      fornecedores:        val('fornecedores'),
+      tem_cp_aberto:       radio('tem_cp_aberto'),
+      cp_aberto_valor:     val('cp_aberto_valor'),
+      cp_aberto_qtd:       val('cp_aberto_qtd'),
+      cp_acordos:          val('cp_acordos'),
+      envio_docs:          checks('envio_docs_group'),
+      obs_cp:              val('obs_cp'),
+      formas_recebimento:  checks('formas_recebimento_group'),
+      faturamento:         val('faturamento'),
+      num_clientes:        val('num_clientes'),
+      tem_contratos:       radio('tem_contratos'),
+      num_contratos:       val('num_contratos'),
+      val_contrato:        val('val_contrato'),
+      venc_contratos:      val('venc_contratos'),
+      tem_reajuste:        radio('tem_reajuste'),
+      tem_cr_aberto:       radio('tem_cr_aberto'),
+      cr_aberto_valor:     val('cr_aberto_valor'),
+      cr_aberto_clientes:  val('cr_aberto_clientes'),
+      cr_acordos:          val('cr_acordos'),
+      faz_cobranca:        radio('faz_cobranca'),
+      obs_cr:              val('obs_cr'),
+      obs_final:           val('obs_final'),
+      horario:             radio('horario'),
     };
   }
 
-  /* ── Coleta arquivos em base64 ── */
+  // ══════════════════════════════════════════
+  //  ARQUIVOS EM BASE64
+  // ══════════════════════════════════════════
   async function coletarArquivos() {
     const grupos = [
       { inputId: 'upload_fixas',     categoria: 'Despesas Fixas' },
@@ -1133,12 +1271,7 @@
       if (!input?.files?.length) continue;
       for (const file of input.files) {
         const base64 = await toBase64(file);
-        resultado.push({
-          categoria: grupo.categoria,
-          nome:      file.name,
-          tipo:      file.type || 'application/octet-stream',
-          dados:     base64
-        });
+        resultado.push({ categoria: grupo.categoria, nome: file.name, tipo: file.type || 'application/octet-stream', dados: base64 });
       }
     }
     return resultado;
@@ -1153,7 +1286,9 @@
     });
   }
 
-  /* ── Submit ── */
+  // ══════════════════════════════════════════
+  //  SUBMIT
+  // ══════════════════════════════════════════
   async function submitForm() {
     if (!validateSection(4)) return;
 
@@ -1165,10 +1300,9 @@
       return;
     }
 
-    const overlay    = document.getElementById('loading-overlay');
+    const overlay     = document.getElementById('loading-overlay');
     const loadingText = document.getElementById('loading-text');
     overlay.classList.add('visible');
-
     const btn = document.getElementById('btn-submit');
     btn.disabled = true;
 
@@ -1183,11 +1317,11 @@
 
       try {
         await fetch(APPS_SCRIPT_URL, {
-          method:   'POST',
-          mode:     'no-cors',
-          headers:  { 'Content-Type': 'text/plain;charset=utf-8' },
-          body:     JSON.stringify(payload),
-          redirect: 'follow',
+          method:  'POST',
+          mode:    'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body:    JSON.stringify(payload),
+          redirect:'follow',
         });
       } catch (fetchErr) {
         console.error('Erro no fetch:', fetchErr.message);
@@ -1210,10 +1344,18 @@
       alert('Ocorreu um erro ao enviar. Verifique sua conexão e tente novamente.\n\nDetalhe: ' + err.message);
     }
   }
-document.addEventListener('DOMContentLoaded', function() {
-  document.querySelectorAll('.toggle-opt.selected input[type=radio]')
-    .forEach(inp => { inp.checked = true; });
-});
+
+  // ══════════════════════════════════════════
+  //  INIT
+  // ══════════════════════════════════════════
+  document.addEventListener('DOMContentLoaded', function() {
+    // Marca radios já selecionados como checked no DOM
+    document.querySelectorAll('.toggle-opt.selected input[type=radio]')
+      .forEach(inp => { inp.checked = true; });
+
+    // Cria automaticamente o primeiro responsável
+    addResponsavel();
+  });
 </script>
 </body>
 </html>
