@@ -1752,14 +1752,19 @@
 
       loadingText.textContent = 'Enviando para o Google Drive…';
 
-      // no-cors evita o erro de CORS — o Apps Script retornará sem body,
-      // mas os dados chegam normalmente ao servidor.
-      await fetch(APPS_SCRIPT_URL, {
-        method:  'POST',
-        mode:    'no-cors',
-        headers: { 'Content-Type': 'text/plain' },
-        body:    JSON.stringify(payload),
-      });
+      try {
+  const response = await fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(payload),
+    redirect: 'follow',
+  });
+  console.log('Fetch concluído — status:', response.status, response.type);
+} catch (fetchErr) {
+  console.error('Erro no fetch:', fetchErr.message);
+  throw fetchErr;
+}
 
       // Tela de sucesso
       overlay.classList.remove('visible');
