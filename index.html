@@ -1041,9 +1041,15 @@
         .map(el => el.textContent.trim()).join(', ');
 
     const radio = (name) => {
-      const sel = document.querySelector('input[name="' + name + '"]:checked');
-      return sel ? sel.value : '';
-    };
+  // Tenta pelo :checked nativo primeiro
+  const sel = document.querySelector('input[name="' + name + '"]:checked');
+  if (sel) return sel.value;
+  // Se não encontrar, busca pelo botão com classe "selected"
+  const visual = document.querySelector(
+    '.toggle-opt.selected input[name="' + name + '"]'
+  );
+  return visual ? visual.value : '';
+};
 
     const val = (id) => {
       const el = document.getElementById(id);
