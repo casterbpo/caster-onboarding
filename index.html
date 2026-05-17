@@ -1760,7 +1760,7 @@
     body: JSON.stringify(payload),
     redirect: 'follow',
   });
-  console.log('Fetch concluído — status:', response.status, response.type);
+  
 } catch (fetchErr) {
   console.error('Erro no fetch:', fetchErr.message);
   throw fetchErr;
