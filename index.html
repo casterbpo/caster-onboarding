@@ -355,12 +355,13 @@
         </div>
         <div class="field">
           <label>Ramo de Atividade <span class="req">*</span></label>
-          <select id="ramo" required>
+          <select id="ramo" required onchange="toggleOutroRamo(this)">
             <option value="">Selecione...</option>
             <option>Comércio</option><option>Serviços</option><option>Indústria</option>
             <option>Tecnologia</option><option>Saúde</option><option>Educação</option>
             <option>Construção Civil</option><option>Agronegócio</option><option>Outro</option>
           </select>
+          <input type="text" id="ramo_outro" class="outro-banco-input" placeholder="Descreva o ramo de atividade">
           <span class="field-error">Campo obrigatório</span>
         </div>
         <div class="field">
@@ -400,7 +401,7 @@
       </div>
       <div id="contabilidade_wrap" class="conditional">
         <div class="grid-2">
-          <div class="field">
+          <div class="field col-span-2">
             <label>Nome da Empresa de Contabilidade</label>
             <input type="text" id="cont_empresa" placeholder="Ex: Contabilidade Souza &amp; Associados">
           </div>
@@ -1007,6 +1008,16 @@
     }
   }
 
+function toggleOutroRamo(select) {
+    const input = document.getElementById('ramo_outro');
+    if (select.value === 'Outro') {
+      input.classList.add('visible');
+      input.focus();
+    } else {
+      input.classList.remove('visible');
+      input.value = '';
+    }
+  }
   function addBank() {
     bankCount++;
     const container = document.getElementById('banks-container');
