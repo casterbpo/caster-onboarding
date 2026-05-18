@@ -191,7 +191,10 @@
   .check-opt .box { width: 16px; height: 16px; border: 2px solid currentColor; border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .check-opt.checked { background: var(--verde-escuro); border-color: var(--verde-escuro); color: #fff; }
   .check-opt.checked .box::after { content: '✓'; font-size: 0.65rem; color: var(--dourado); font-weight: 700; }
-
+.check-grid.invalido {
+    outline: 2px solid #c0392b;
+    border-radius: 8px;
+  }
   .conditional { display: none; }
   .conditional.visible { display: block; }
 
@@ -1106,16 +1109,15 @@ function toggleOutroRamo(select) {
       }
     });
 
-    // Valida checkboxes obrigatórios — só os que estão nesta seção
     const checksObrigatorios = [
-      { groupId: 'cats_fixas',               wrapId: 'fixas_wrap' },
-      { groupId: 'envio_docs_group',          wrapId: null },
-      { groupId: 'formas_recebimento_group',  wrapId: null },
+      { groupId: 'cats_fixas',              wrapId: 'fixas_wrap' },
+      { groupId: 'envio_docs_group',         wrapId: null },
+      { groupId: 'formas_recebimento_group', wrapId: null },
     ];
 
     checksObrigatorios.forEach(({ groupId, wrapId }) => {
-      const group = section.querySelector('#' + groupId); // só busca dentro da seção atual
-      if (!group) return; // se não está nesta seção, pula
+      const group = section.querySelector('#' + groupId);
+      if (!group) return;
 
       if (wrapId) {
         const wrap = document.getElementById(wrapId);
@@ -1127,17 +1129,16 @@ function toggleOutroRamo(select) {
 
       if (marcados.length === 0) {
         valid = false;
-        group.style.outline = '2px solid var(--erro)';
-        group.style.borderRadius = '8px';
+        group.classList.add('invalido');
         if (fieldEl) fieldEl.classList.add('has-error');
       } else {
-        group.style.outline = '';
+        group.classList.remove('invalido');
         if (fieldEl) fieldEl.classList.remove('has-error');
       }
     });
 
     if (!valid) {
-      const first = section.querySelector('.invalid') || section.querySelector('.check-grid[style*="outline"]');
+      const first = section.querySelector('.invalid, .invalido');
       if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
@@ -1164,14 +1165,13 @@ function toggleOutroRamo(select) {
     if (inp) inp.checked = true;
   }
 
-  function toggleCheck(el, event) {
+  ffunction toggleCheck(el, event) {
     event.preventDefault();
     el.classList.toggle('checked');
 
-    // Remove o erro do grupo quando qualquer opção for marcada
     const group = el.closest('.check-grid');
     if (group && group.querySelectorAll('.check-opt.checked').length > 0) {
-      group.style.outline = '';
+      group.classList.remove('invalido');
       const fieldEl = group.closest('.field');
       if (fieldEl) fieldEl.classList.remove('has-error');
     }
