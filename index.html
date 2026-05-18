@@ -345,16 +345,14 @@
           <span class="field-error">Campo obrigatório</span>
         </div>
         <div class="field">
-  <label>CNPJ <span class="req">*</span></label>
-  <input type="text" id="cnpj" placeholder="00.000.000/0000-00" required maxlength="18">
-  <span class="field-error">Campo obrigatório</span>
-</div>
-<div class="field">
-  <label>Telefone / WhatsApp da Empresa <span class="req">*</span></label>
-  <input type="tel" id="tel_empresa" placeholder="(00) 00000-0000" required>
-  <span class="field-hint">Não esquecer de inserir o DDD</span>
-  <span class="field-error">Campo obrigatório</span>
-</div>
+          <label>Nome Fantasia</label>
+          <input type="text" id="nome_fantasia" placeholder="Como é conhecida">
+        </div>
+        <div class="field">
+          <label>CNPJ <span class="req">*</span></label>
+          <input type="text" id="cnpj" placeholder="00.000.000/0000-00" required maxlength="18">
+          <span class="field-error">Campo obrigatório</span>
+        </div>
         <div class="field">
           <label>Ramo de Atividade <span class="req">*</span></label>
           <select id="ramo" required>
@@ -402,7 +400,7 @@
       </div>
       <div id="contabilidade_wrap" class="conditional">
         <div class="grid-2">
-          <div class="field col-span-2">
+          <div class="field">
             <label>Nome da Empresa de Contabilidade</label>
             <input type="text" id="cont_empresa" placeholder="Ex: Contabilidade Souza &amp; Associados">
           </div>
@@ -413,16 +411,10 @@
           <div class="field">
             <label>Telefone / WhatsApp do Contador</label>
             <input type="tel" id="cont_tel" placeholder="(00) 00000-0000">
-<span class="field-hint">Não esquecer de inserir o DDD</span>
           </div>
           <div class="field">
-            <label>Quando a empresa costuma enviar as informações para a contabilidade?</label>
+            <label>Quando a empresa envia as informações para a contabilidade?</label>
             <input type="text" id="cont_dia_envio" placeholder="Ex: Todo dia 10 de cada mês">
-            <span class="field-hint">Informe o dia ou período em que costumam enviar relatórios ou documentos</span>
-          </div>
-<div class="field">
-            <label>Quando a empresa costuma receber as informações da contabilidade?</label>
-            <input type="text" id="cont_dia_recebimento" placeholder="Ex: Todo dia 10 de cada mês">
             <span class="field-hint">Informe o dia ou período em que costumam receber balancetes, relatórios ou documentos</span>
           </div>
         </div>
@@ -955,9 +947,8 @@
         </div>
         <div class="field">
           <label>WhatsApp ${reqMark}</label>
-<input type="tel" class="resp-tel" placeholder="(00) 00000-0000" ${required}>
-<span class="field-error">Campo obrigatório</span>
-<span class="field-hint">Não esquecer de inserir o DDD</span>
+          <input type="tel" class="resp-tel" placeholder="(00) 00000-0000" ${required}>
+          <span class="field-error">Campo obrigatório</span>
         </div>
       </div>
     `;
@@ -1158,12 +1149,6 @@
     this.value = v;
   });
 
-  document.getElementById('tel_empresa').addEventListener('input', function() {
-  let v = this.value.replace(/\D/g, '').substring(0, 11);
-  v = v.replace(/^(\d{2})(\d)/, '($1) $2');
-  v = v.replace(/(\d{5})(\d)/, '$1-$2');
-  this.value = v;
-});
 
   document.querySelectorAll('input, select, textarea').forEach(el => {
     el.addEventListener('input', () => {
@@ -1220,14 +1205,12 @@
       cnpj:                val('cnpj'),
       ramo:                val('ramo'),
       regime:              val('regime'),
-tel_empresa:         val('tel_empresa'),
       responsaveis:        responsaveis,
       tem_contabilidade:   radio('tem_contabilidade'),
       cont_empresa:        val('cont_empresa'),
       cont_nome:           val('cont_nome'),
       cont_tel:            val('cont_tel'),
       cont_dia_envio:      val('cont_dia_envio'),
-cont_dia_recebimento:      val('cont_dia_recebimento'),
       bancos:              bancos,
       tem_sistema:         radio('tem_sistema'),
       sistema_nome:        val('sistema_nome'),
@@ -1360,12 +1343,17 @@ cont_dia_recebimento:      val('cont_dia_recebimento'),
   //  INIT
   // ══════════════════════════════════════════
   document.addEventListener('DOMContentLoaded', function() {
-    // Marca radios já selecionados como checked no DOM
     document.querySelectorAll('.toggle-opt.selected input[type=radio]')
       .forEach(inp => { inp.checked = true; });
 
-    // Cria automaticamente o primeiro responsável
     addResponsavel();
+
+    document.getElementById('cont_tel').addEventListener('input', function() {
+      let v = this.value.replace(/\D/g, '').substring(0, 11);
+      v = v.replace(/^(\d{2})(\d)/, '($1) $2');
+      v = v.replace(/(\d{5})(\d)/, '$1-$2');
+      this.value = v;
+    });
   });
 </script>
 </body>
