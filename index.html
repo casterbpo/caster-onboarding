@@ -1090,6 +1090,7 @@ function toggleOutroRamo(select) {
     const section = document.getElementById('section-' + step);
     const required = section.querySelectorAll('[required]');
     let valid = true;
+
     required.forEach(field => {
       const parent = field.closest('.field');
       if (!field.value.trim()) {
@@ -1101,10 +1102,43 @@ function toggleOutroRamo(select) {
         if (parent) parent.classList.remove('has-error');
       }
     });
+
+    // Valida checkboxes obrigatórios
+    const checksObrigatorios = [
+      { groupId: 'cats_fixas',              wrapId: 'fixas_wrap' },
+      { groupId: 'envio_docs_group',        wrapId: null },
+      { groupId: 'formas_recebimento_group',wrapId: null },
+    ];
+
+    checksObrigatorios.forEach(({ groupId, wrapId }) => {
+      const group = document.getElementById(groupId);
+      if (!group) return;
+
+      // Se tem um wrap condicional, só valida se ele estiver visível
+      if (wrapId) {
+        const wrap = document.getElementById(wrapId);
+        if (!wrap || !wrap.classList.contains('visible')) return;
+      }
+
+      const marcados = group.querySelectorAll('.check-opt.checked');
+      const fieldEl  = group.closest('.field');
+
+      if (marcados.length === 0) {
+        valid = false;
+        group.style.outline = '2px solid var(--erro)';
+        group.style.borderRadius = '8px';
+        if (fieldEl) fieldEl.classList.add('has-error');
+      } else {
+        group.style.outline = '';
+        if (fieldEl) fieldEl.classList.remove('has-error');
+      }
+    });
+
     if (!valid) {
-      const first = section.querySelector('.invalid');
+      const first = section.querySelector('.invalid, [style*="outline"]');
       if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
+
     return valid;
   }
 
@@ -1131,6 +1165,20 @@ function toggleOutroRamo(select) {
   function toggleCheck(el, event) {
     event.preventDefault();
     el.classList.toggle('checked');
+
+    // Remove o erro do grupo quando qualquer opção for marcada
+    const group = el.closest('.check-grid');
+    if (group && group.querySelectorAll('.check-opt.checked').length > 0) {
+      group.style.outline = '';
+      const fieldEl = group.closest('.field');
+      if (fieldEl) fieldEl.classList.remove('has-error');
+    }
+  }
+
+function validarCheckObrigatorio(groupId) {
+    const group = document.getElementById(groupId);
+    const marcados = group.querySelectorAll('.check-opt.checked');
+    return marcados.length > 0;
   }
 
   function showConditional(id, show) {
