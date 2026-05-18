@@ -1015,9 +1015,12 @@ function toggleOutroRamo(select) {
     const input = document.getElementById('ramo_outro');
     if (select.value === 'Outro') {
       input.classList.add('visible');
+      input.required = true;
       input.focus();
     } else {
       input.classList.remove('visible');
+      input.classList.remove('invalid');
+      input.required = false;
       input.value = '';
     }
   }
@@ -1135,7 +1138,7 @@ function toggleOutroRamo(select) {
     });
 
     if (!valid) {
-      const first = section.querySelector('.invalid, [style*="outline"]');
+      const first = section.querySelector('.invalid') || section.querySelector('.check-grid[style*="outline"]');
       if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
