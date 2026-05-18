@@ -541,7 +541,7 @@
       </div>
       <div id="fixas_wrap" class="conditional visible">
         <div class="field" style="margin-bottom:14px">
-          <label>Quais categorias de despesas fixas?</label>
+          <label>Quais categorias de despesas fixas?<span class="req">*</span></label>
           <div class="check-grid" id="cats_fixas" style="margin-top:8px">
             <label class="check-opt" onclick="toggleCheck(this, event)"><input type="checkbox" value="Aluguel"><span class="box"></span>🏠 Aluguel</label>
             <label class="check-opt" onclick="toggleCheck(this, event)"><input type="checkbox" value="Energia"><span class="box"></span>⚡ Energia Elétrica</label>
@@ -553,7 +553,8 @@
             <label class="check-opt" onclick="toggleCheck(this, event)"><input type="checkbox" value="Salários"><span class="box"></span>👥 Salários/Pró-labore</label>
             <label class="check-opt" onclick="toggleCheck(this, event)"><input type="checkbox" value="Impostos"><span class="box"></span>🧾 Impostos Fixos</label>
             <label class="check-opt" onclick="toggleCheck(this, event)"><input type="checkbox" value="Fornecedores"><span class="box"></span>🤝 Fornecedores Fixos</label>
-          </div>
+          <span class="field-error">Campo obrigatório</span>
+</div>
         </div>
         <div class="field">
           <label>Outras despesas fixas não listadas acima</label>
@@ -632,13 +633,14 @@
     <div class="field-group">
       <div class="field-group-title">Processo Atual</div>
       <div class="field">
-        <label>Como os fornecedores enviam boletos e notas fiscais hoje?</label>
+        <label>Como os fornecedores enviam boletos e notas fiscais hoje?<span class="req">*</span></label>
         <div class="check-grid" id="envio_docs_group" style="margin-top:8px">
           <label class="check-opt" onclick="toggleCheck(this, event)"><input type="checkbox" value="email"><span class="box"></span>📧 E-mail</label>
           <label class="check-opt" onclick="toggleCheck(this, event)"><input type="checkbox" value="whatsapp"><span class="box"></span>📱 WhatsApp</label>
           <label class="check-opt" onclick="toggleCheck(this, event)"><input type="checkbox" value="portal"><span class="box"></span>🌐 Portal do fornecedor</label>
           <label class="check-opt" onclick="toggleCheck(this, event)"><input type="checkbox" value="correio"><span class="box"></span>📮 Correio/físico</label>
           <label class="check-opt" onclick="toggleCheck(this, event)"><input type="checkbox" value="nenhum"><span class="box"></span>❓ Não há processo definido</label>
+        <span class="field-error">Campo obrigatório</span>
         </div>
       </div>
       <div class="field" style="margin-top:14px">
@@ -677,7 +679,8 @@
           <label class="check-opt" onclick="toggleCheck(this, event)"><input type="checkbox" value="cartao"><span class="box"></span>💳 Cartão (maquininha)</label>
           <label class="check-opt" onclick="toggleCheck(this, event)"><input type="checkbox" value="transferencia"><span class="box"></span>🏦 Transferência bancária</label>
           <label class="check-opt" onclick="toggleCheck(this, event)"><input type="checkbox" value="marketplace"><span class="box"></span>🛒 Marketplace</label>
-        </div>
+        <span class="field-error">Campo obrigatório</span>
+</div>
       </div>
       <div class="grid-2">
         <div class="field">
