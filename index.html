@@ -1106,18 +1106,17 @@ function toggleOutroRamo(select) {
       }
     });
 
-    // Valida checkboxes obrigatórios
+    // Valida checkboxes obrigatórios — só os que estão nesta seção
     const checksObrigatorios = [
-      { groupId: 'cats_fixas',              wrapId: 'fixas_wrap' },
-      { groupId: 'envio_docs_group',        wrapId: null },
-      { groupId: 'formas_recebimento_group',wrapId: null },
+      { groupId: 'cats_fixas',               wrapId: 'fixas_wrap' },
+      { groupId: 'envio_docs_group',          wrapId: null },
+      { groupId: 'formas_recebimento_group',  wrapId: null },
     ];
 
     checksObrigatorios.forEach(({ groupId, wrapId }) => {
-      const group = document.getElementById(groupId);
-      if (!group) return;
+      const group = section.querySelector('#' + groupId); // só busca dentro da seção atual
+      if (!group) return; // se não está nesta seção, pula
 
-      // Se tem um wrap condicional, só valida se ele estiver visível
       if (wrapId) {
         const wrap = document.getElementById(wrapId);
         if (!wrap || !wrap.classList.contains('visible')) return;
